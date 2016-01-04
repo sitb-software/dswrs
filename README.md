@@ -38,19 +38,19 @@
     @EnableRpcClient(rpcServiceBaseInterface = {ServiceBase.class})
     public class MyAppClient implements CommandLineRunner{
 
-    @Autowired
-    private Service1 service1;
+        @Autowired
+        private Service1 service1;
 
-    @Autowired
-    private Service2 service2;
+        @Autowired
+        private Service2 service2;
 
-    public static void main(String[] args) {
-        SpringApplication.run(OnlineApplication.class, args);
+        public static void main(String[] args) {
+            SpringApplication.run(OnlineApplication.class, args);
+        }
+
+        @Override
+        public void run(String... args) throws Exception {
+            System.out.println(service1);
+            System.out.println(service2);
+        }
     }
-
-    @Override
-    public void run(String... args) throws Exception {
-        System.out.println(service1);
-        System.out.println(service2);
-    }
-}
