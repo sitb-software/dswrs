@@ -1,0 +1,39 @@
+{
+  "properties": [
+    {
+      "name": "dswrs.zoo-keeper.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable the zookeeper."
+    },
+    {
+      "name": "dswrs.zoo-keeper.connect-string",
+      "type": "java.lang.String",
+      "description": "ZooKeeper connectString."
+    },
+    {
+      "name": "dswrs.zoo-keeper.session-timeout",
+      "type": "java.lang.Integer",
+      "description": "ZooKeeper sessionTimeout."
+    },
+    {
+      "name": "dswrs.zoo-keeper.registry-path",
+      "type": "java.lang.String",
+      "description": "server root node path on ZooKeeper."
+    },
+    {
+      "name": "dswrs.zoo-keeper.node-path",
+      "type": "java.lang.String",
+      "description": "server node on ZooKeeper."
+    },
+    {
+      "name": "dswrs.host",
+      "type": "java.lang.String",
+      "description": "On server listen host, On client server host."
+    },
+    {
+      "name": "dswrs.port",
+      "type": "java.lang.Integer",
+      "description": "On server listen port. On client server port."
+    }
+  ]
+}
