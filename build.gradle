@@ -1,7 +1,5 @@
-apply from: 'libraries.gradle'
-
 group 'software.sitb'
-version '1.0-SNAPSHOT'
+version '1.0.0.RELEASE'
 
 repositories {
     maven { url "http://repo.sitb.software/content/groups/public/" }
@@ -9,43 +7,16 @@ repositories {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply from: 'libraries.gradle'
+apply from: 'provided.gradle'
+apply from: 'optional.gradle'
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-
 
 compileJava {
     targetCompatibility = JavaVersion.VERSION_1_8
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
-
-
-configurations {
-    provided {
-        visible = false
-    }
-
-    testCompile {
-        extendsFrom provided
-    }
-}
-
-sourceSets {
-    main {
-        compileClasspath += configurations.provided
-    }
-}
-
-compileJava.dependsOn(processResources)
-
-
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
-}
-
-
-
 
 dependencies {
     compile lib.logging
@@ -53,12 +24,11 @@ dependencies {
     compile lib.protostuff
     compile lib.objenesis
     compile lib.netty_all
-    compile(lib.zookeeper) {
+    optional(lib.zookeeper) {
         transitive = false
     }
     provided lib.spring_boot_configuration_processor
 }
 
-
-
+compileJava.dependsOn(processResources)
 
