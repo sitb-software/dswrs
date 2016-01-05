@@ -34,8 +34,7 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<O> i
             bootstrap.group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
-                    channel.pipeline().addLast(new MessageDecoder(getResponseClazz()));
-                    channel.pipeline().addLast(new MessageEncoder(getRequestClazz()));
+                    addHandler(channel.pipeline());
                     channel.pipeline().addLast(NettyClient.this);
                 }
             }).option(ChannelOption.SO_KEEPALIVE, true);
@@ -65,6 +64,11 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<O> i
         synchronized (obj) {
             obj.notifyAll();
         }
+    }
+
+    protected void addHandler(ChannelPipeline pipeline) {
+        pipeline.addLast(new MessageDecoder(getResponseClazz()));
+        pipeline.addLast(new MessageEncoder(getRequestClazz()));
     }
 
 
