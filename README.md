@@ -31,6 +31,28 @@
 
     }
 
+``application.properties``
+
+    # listen host
+    dswrs.host=127.0.0.1
+    # listen port
+    dswrs.port=9000
+
+    # default true
+    dswrs.zoo-keeper.enabled=true
+    dswrs.zoo-keeper.connect-string=127.0.0.1:2181
+    dswrs.zoo-keeper.session-timeout=5000
+    # zookeeper server path
+    dswrs.zoo-keeper.registry-path=/my-server
+    # zookeeper server child node path
+    # └── /
+    #   └── /my-server
+    #       └── /sh-01
+    #       └── /sh-02
+    #       └── /sh-03
+    #       └── /sh-03
+    dswrs.zoo-keeper.node-path=/sh-01
+
 
 ## 客户端
 
@@ -54,3 +76,9 @@
             System.out.println(service2);
         }
     }
+
+``application.properties``
+
+    dswrs.zoo-keeper.connect-string=127.0.0.1:2181
+    dswrs.zoo-keeper.session-timeout=5000
+    dswrs.zoo-keeper.registry-path=/my-server
