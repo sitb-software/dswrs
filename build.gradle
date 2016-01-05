@@ -1,5 +1,5 @@
 group 'software.sitb'
-version '1.0.0.RELEASE'
+version '1.0.2.RELEASE'
 
 repositories {
     maven { url "http://repo.sitb.software/content/groups/public/" }
@@ -7,16 +7,12 @@ repositories {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply from: 'base.gradle'
 apply from: 'libraries.gradle'
 apply from: 'provided.gradle'
 apply from: 'optional.gradle'
 
-[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-
-compileJava {
-    targetCompatibility = JavaVersion.VERSION_1_8
-    sourceCompatibility = JavaVersion.VERSION_1_8
-}
 
 dependencies {
     compile lib.logging
@@ -32,3 +28,10 @@ dependencies {
 
 compileJava.dependsOn(processResources)
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
