@@ -32,8 +32,7 @@ public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
-                    channel.pipeline().addLast(new MessageDecoder(getRequestClazz()));
-                    channel.pipeline().addLast(new MessageEncoder(getResponseClazz()));
+                    addHandler(channel.pipeline());
                     channel.pipeline().addLast(getHandler(getRequestClazz()));
                 }
             });
@@ -55,6 +54,15 @@ public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
         }
     }
 
+    /**
+     * 添加预处理程序
+     *
+     * @param pipeline ChannelPipeline
+     */
+    public void addHandler(ChannelPipeline pipeline) {
+        pipeline.addLast(new MessageDecoder(getRequestClazz()));
+        pipeline.addLast(new MessageEncoder(getResponseClazz()));
+    }
 
     public abstract ChannelHandler getHandler(Class<I> requestClazz);
 
