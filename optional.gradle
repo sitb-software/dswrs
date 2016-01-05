@@ -1,0 +1,19 @@
+configurations {
+    optional
+
+    compile {
+        extendsFrom optional
+    }
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.optional
+    }
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.optional]
+    }
+}
