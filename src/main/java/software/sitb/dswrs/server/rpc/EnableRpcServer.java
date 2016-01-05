@@ -6,7 +6,6 @@ import java.lang.annotation.*;
 
 /**
  * @author Sean sean.snow@live.com
- * @date 2016/1/3
  */
 @Documented
 @Target(ElementType.TYPE)

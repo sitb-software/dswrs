@@ -10,7 +10,6 @@ import java.lang.annotation.*;
  * RPC 标注该服务为RPC服务
  *
  * @author Sean sean.snow@live.com
- * @date 2015/12/31
  * @see Component
  * @see Repository
  * @see Service

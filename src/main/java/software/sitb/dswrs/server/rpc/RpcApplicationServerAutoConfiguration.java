@@ -10,8 +10,10 @@ import software.sitb.dswrs.core.config.DswrsProperties;
 import software.sitb.dswrs.core.zookeeper.ZooKeeperServiceRegistry;
 
 /**
+ * 服务Bean配置
+ * 引入项目Properties配置文件
+ *
  * @author Sean sean.snow@live.com
- * @date 2016/1/3
  */
 @Configurable
 @EnableConfigurationProperties({DswrsProperties.class})

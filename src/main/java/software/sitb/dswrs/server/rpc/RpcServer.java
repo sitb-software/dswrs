@@ -19,7 +19,6 @@ import java.util.Map;
  * RPC 服务器
  *
  * @author Sean sean.snow@live.com
- * @date 2016/1/1
  */
 public abstract class RpcServer extends NettyServer<RpcRequest, RpcResponse> implements ApplicationContextAware, InitializingBean {
 

@@ -16,7 +16,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * 服务发现
  *
  * @author Sean sean.snow@live.com
- * @date 2015/12/31
  */
 public class ZooKeeperServiceDiscovery implements ServiceDiscovery {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZooKeeperServiceDiscovery.class);

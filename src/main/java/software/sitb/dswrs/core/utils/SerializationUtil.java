@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 序列化工具
  *
  * @author Sean sean.snow@live.com
- * @date 2015/12/31
  */
 @SuppressWarnings("unchecked")
 public class SerializationUtil {
@@ -35,7 +34,7 @@ public class SerializationUtil {
     }
 
     /**
-     * 序列化（对象 -> 字节数组）
+     * 序列化（对象 to 字节数组）
      *
      * @param obj 需要序列化的对象
      * @param <T> 转换的数据
@@ -55,7 +54,7 @@ public class SerializationUtil {
     }
 
     /**
-     * 反序列化（字节数组 -> 对象）
+     * 反序列化（字节数组 to 对象）
      *
      * @param data 反序列化的数据
      * @param cls  转换后的类

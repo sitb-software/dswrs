@@ -15,7 +15,6 @@ import java.util.Map;
 
 /**
  * @author Sean sean.snow@live.com
- * @date 2016/1/4
  */
 public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 

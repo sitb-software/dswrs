@@ -4,8 +4,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import software.sitb.dswrs.core.zookeeper.ZooKeeperConfig;
 
 /**
+ * 配置文件
+ *
  * @author Sean sean.snow@live.com
- * @date 2016/1/1
  */
 @ConfigurationProperties(prefix = "dswrs", ignoreUnknownFields = true)
 public class DswrsProperties {

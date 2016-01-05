@@ -13,7 +13,6 @@ import java.io.IOException;
  * 服务注册
  *
  * @author Sean sean.snow@live.com
- * @date 2015/12/31
  */
 public class ZooKeeperServiceRegistry implements ServiceRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZooKeeperServiceRegistry.class);

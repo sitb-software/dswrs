@@ -4,7 +4,6 @@ package software.sitb.dswrs.core.rpc;
  * RPC 请求数据
  *
  * @author Sean sean.snow@live.com
- * @date 2015/12/31
  */
 public class RpcRequest implements java.io.Serializable {
     private static final long serialVersionUID = -789866842099072413L;

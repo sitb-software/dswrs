@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Sean sean.snow@live.com
- * @date 2015/12/31
  */
 public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
 
@@ -19,7 +18,8 @@ public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
     /**
      * 启动Netty 服务端
      *
-     * @throws InterruptedException
+     * @param callback 服务启动回调函数
+     * @throws InterruptedException InterruptedException
      */
     public void start(Callback callback) throws InterruptedException {
         EventLoopGroup bossGroup = new NioEventLoopGroup();

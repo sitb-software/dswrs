@@ -11,7 +11,6 @@ import software.sitb.dswrs.core.zookeeper.ZooKeeperServiceDiscovery;
 
 /**
  * @author Sean sean.snow@live.com
- * @date 2016/1/2
  */
 @Configuration
 @EnableConfigurationProperties(DswrsProperties.class)

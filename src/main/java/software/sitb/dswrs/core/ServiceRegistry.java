@@ -1,10 +1,9 @@
 package software.sitb.dswrs.core;
 
 /**
- * 服务注册
+ * 服务注册接口
  *
  * @author Sean sean.snow@live.com
- * @date 2015/12/31
  */
 public interface ServiceRegistry {
 

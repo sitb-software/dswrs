@@ -2,7 +2,6 @@ package software.sitb.dswrs.core.zookeeper;
 
 /**
  * @author Sean sean.snow@live.com
- * @date 2016/1/1
  */
 public class ZooKeeperConfig {
 

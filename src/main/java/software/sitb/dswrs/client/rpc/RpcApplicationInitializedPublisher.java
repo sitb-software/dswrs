@@ -30,7 +30,6 @@ import java.util.*;
  * 创建RPC Bean 的 代理Bean
  *
  * @author Sean sean.snow@live.com
- * @date 2016/1/2
  */
 public class RpcApplicationInitializedPublisher implements BeanPostProcessor, Ordered, SmartInitializingSingleton {
 
