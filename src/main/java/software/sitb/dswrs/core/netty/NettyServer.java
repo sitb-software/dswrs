@@ -33,7 +33,7 @@ public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     addHandler(channel.pipeline());
-                    channel.pipeline().addLast(getHandler(getRequestClazz()));
+                    channel.pipeline().addLast(getMessageHandler());
                 }
             });
             bootstrap.option(ChannelOption.SO_BACKLOG, 128);
@@ -59,12 +59,11 @@ public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
      *
      * @param pipeline ChannelPipeline
      */
+    @Override
     public void addHandler(ChannelPipeline pipeline) {
         pipeline.addLast(new MessageDecoder(getRequestClazz()));
         pipeline.addLast(new MessageEncoder(getResponseClazz()));
     }
-
-    public abstract ChannelHandler getHandler(Class<I> requestClazz);
 
     public interface Callback {
         void onFinish();
