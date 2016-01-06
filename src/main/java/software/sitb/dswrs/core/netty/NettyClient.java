@@ -14,18 +14,11 @@ import org.slf4j.LoggerFactory;
  * date 2015-4-11
  * time 下午1:45:21
  */
-public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<O> implements NettyNetwork<I, O> {
+public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Object> implements NettyNetwork<I, O> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
     private final Object obj = new Object();
     private O response;
-
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.error("client caught exception", cause);
-        ctx.close();
-    }
 
     public O send(I request) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
@@ -35,7 +28,7 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<O> i
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     addHandler(channel.pipeline());
-                    channel.pipeline().addLast(NettyClient.this);
+                    channel.pipeline().addLast(getMessageHandler());
                 }
             }).option(ChannelOption.SO_KEEPALIVE, true);
 
@@ -58,20 +51,37 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<O> i
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext arg0, O response) throws Exception {
+    @SuppressWarnings("unchecked")
+    protected void messageReceived(ChannelHandlerContext ctx, Object response) throws Exception {
         LOGGER.info("receive data -> {}", response);
-        this.response = response;
+        this.response = (O) response;
         synchronized (obj) {
             obj.notifyAll();
         }
     }
 
-    protected void addHandler(ChannelPipeline pipeline) {
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        LOGGER.error(cause.getMessage(), cause);
+        ctx.close();
+    }
+
+
+    @Override
+    public void addHandler(ChannelPipeline pipeline) {
         pipeline.addLast(new MessageDecoder(getResponseClazz()));
         pipeline.addLast(new MessageEncoder(getRequestClazz()));
     }
 
-
+    @Override
+    public ChannelHandler getMessageHandler() {
+        return this;
+    }
 }
 
 
