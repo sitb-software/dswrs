@@ -25,7 +25,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
-        ctx.write(handler(msg)).addListener(ChannelFutureListener.CLOSE);
+        ctx.write(handler(msg));
     }
 
     @Override
@@ -42,6 +42,13 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     }
 
 
+    /**
+     * RPC 请求处理
+     *
+     * @param request 请求RPC信息
+     * @return RPC 处理结果
+     * @see RpcResponse
+     */
     private RpcResponse handler(RpcRequest request) {
         RpcResponse response = new RpcResponse();
         response.setRequestId(request.getRequestId());
