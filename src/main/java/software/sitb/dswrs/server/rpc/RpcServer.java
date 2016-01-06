@@ -62,7 +62,7 @@ public abstract class RpcServer extends NettyServer<RpcRequest, RpcResponse> imp
     }
 
     @Override
-    public ChannelHandler getHandler(Class<RpcRequest> requestClass) {
+    public ChannelHandler getMessageHandler() {
         RpcServerHandler handler = new RpcServerHandler();
         handler.setRpcServiceBean(this.rpcBeans);
         return handler;
