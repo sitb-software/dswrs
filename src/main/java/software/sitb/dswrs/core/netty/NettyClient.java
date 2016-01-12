@@ -68,6 +68,9 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         LOGGER.error(cause.getMessage(), cause);
+        synchronized (obj) {
+            obj.notifyAll();
+        }
         ctx.close();
     }
 
