@@ -62,7 +62,8 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.flush();
+        LOGGER.info("Read Complete, close channel");
+        ctx.flush().close();
     }
 
     @Override
