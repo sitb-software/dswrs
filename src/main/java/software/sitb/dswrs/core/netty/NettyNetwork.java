@@ -31,4 +31,19 @@ public interface NettyNetwork<I, O> {
      * @return 消息处理器
      */
     ChannelHandler getMessageHandler();
+
+    /**
+     * 读取数据超时时间
+     * 单位:秒
+     *
+     * @return 超时时间
+     */
+    int getReadTimeout();
+
+    /**
+     * 写入数据超时时间
+     *
+     * @return 超时时间
+     */
+    int getWriteTimeout();
 }

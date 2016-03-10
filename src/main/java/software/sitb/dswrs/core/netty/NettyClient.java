@@ -5,6 +5,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
             bootstrap.group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
+                    addTimeoutHandler(channel.pipeline());
                     addHandler(channel.pipeline());
                     channel.pipeline().addLast(getMessageHandler());
                 }
@@ -66,6 +69,32 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
     public void addHandler(ChannelPipeline pipeline) {
         pipeline.addLast(new MessageDecoder(getResponseClazz()));
         pipeline.addLast(new MessageEncoder(getRequestClazz()));
+    }
+
+    private void addTimeoutHandler(ChannelPipeline pipeline) {
+        pipeline.addLast(new ReadTimeoutHandler(getReadTimeout()));
+        pipeline.addLast(new WriteTimeoutHandler(getWriteTimeout()));
+    }
+
+    /**
+     * 读取数据超时时间
+     * 单位:秒
+     *
+     * @return 超时时间
+     */
+    @Override
+    public int getReadTimeout() {
+        return 0;
+    }
+
+    /**
+     * 写入数据超时时间
+     *
+     * @return 超时时间
+     */
+    @Override
+    public int getWriteTimeout() {
+        return 0;
     }
 
     @Override
