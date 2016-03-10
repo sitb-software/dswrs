@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Object> implements NettyNetwork<I, O> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
-    private final Object obj = new Object();
     private O response;
 
     public O send(I request) throws Exception {
@@ -35,12 +34,7 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
             ChannelFuture future = bootstrap.connect(getHost(), getPort()).sync();
             LOGGER.info("send data -> {}", request);
             future.channel().writeAndFlush(request).sync();
-
-            synchronized (obj) {
-                LOGGER.debug("Waiting response....");
-                obj.wait();
-            }
-
+            LOGGER.debug("Waiting response....");
             future.channel().closeFuture().sync();
             return response;
         } finally {
@@ -53,9 +47,6 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
     protected void messageReceived(ChannelHandlerContext ctx, Object response) throws Exception {
         LOGGER.info("receive data -> {}", response);
         this.response = (O) response;
-        synchronized (obj) {
-            obj.notifyAll();
-        }
     }
 
     @Override
@@ -67,9 +58,6 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         LOGGER.error(cause.getMessage(), cause);
-        synchronized (obj) {
-            obj.notifyAll();
-        }
         ctx.close();
     }
 
