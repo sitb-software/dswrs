@@ -41,9 +41,7 @@ public abstract class NettyClient<I, O> extends SimpleChannelInboundHandler<Obje
                 obj.wait();
             }
 
-            if (response != null) {
-                future.channel().closeFuture().sync();
-            }
+            future.channel().closeFuture().sync();
             return response;
         } finally {
             group.shutdownGracefully();
