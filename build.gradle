@@ -1,5 +1,5 @@
 group 'software.sitb'
-version '1.0.8.RELEASE'
+version '1.0.9.RELEASE'
 
 repositories {
     maven { url "http://repo.sitb.software/content/groups/public/" }
@@ -15,11 +15,11 @@ apply from: 'optional.gradle'
 
 
 dependencies {
-    compile lib.logging
-    compile lib.spring_boot
-    compile lib.protostuff
-    compile lib.objenesis
-    compile lib.netty_all
+    optional lib.logging
+    optional lib.spring_boot
+    optional lib.protostuff
+    optional lib.objenesis
+    optional lib.netty_all
     optional(lib.zookeeper) {
         transitive = false
     }

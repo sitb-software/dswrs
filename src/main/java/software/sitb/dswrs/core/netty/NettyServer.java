@@ -1,7 +1,10 @@
 package software.sitb.dswrs.core.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -11,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Sean sean.snow@live.com
  */
-public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
+public abstract class NettyServer implements NettyNetwork {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyServer.class);
 
@@ -33,7 +36,6 @@ public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     addHandler(channel.pipeline());
-                    channel.pipeline().addLast(getMessageHandler());
                 }
             });
             bootstrap.option(ChannelOption.SO_BACKLOG, 128);
@@ -52,17 +54,6 @@ public abstract class NettyServer<I, O> implements NettyNetwork<I, O> {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
-    }
-
-    /**
-     * 添加预处理程序
-     *
-     * @param pipeline ChannelPipeline
-     */
-    @Override
-    public void addHandler(ChannelPipeline pipeline) {
-        pipeline.addLast(new MessageDecoder(getRequestClazz()));
-        pipeline.addLast(new MessageEncoder(getResponseClazz()));
     }
 
     public interface Callback {

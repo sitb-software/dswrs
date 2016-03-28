@@ -4,7 +4,7 @@ import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 import software.sitb.dswrs.core.ServiceDiscovery;
-import software.sitb.dswrs.core.netty.NettyClient;
+import software.sitb.dswrs.core.netty.ObjectClient;
 import software.sitb.dswrs.core.rpc.RpcRequest;
 import software.sitb.dswrs.core.rpc.RpcResponse;
 
@@ -49,7 +49,7 @@ public class RpcBeanProxyHelper implements MethodInterceptor {
         String host = serverAddress[0];
         int port = Integer.parseInt(serverAddress[1]);
 
-        NettyClient<RpcRequest, RpcResponse> client = new NettyClient<RpcRequest, RpcResponse>() {
+        ObjectClient<RpcRequest, RpcResponse> client = new ObjectClient<RpcRequest, RpcResponse>() {
             @Override
             public int getPort() {
                 return port;

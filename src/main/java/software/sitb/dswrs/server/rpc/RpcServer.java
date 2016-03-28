@@ -1,13 +1,13 @@
 package software.sitb.dswrs.server.rpc;
 
-import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelPipeline;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import software.sitb.dswrs.core.ServiceRegistry;
 import software.sitb.dswrs.core.config.DswrsProperties;
-import software.sitb.dswrs.core.netty.NettyServer;
+import software.sitb.dswrs.core.netty.ObjectServer;
 import software.sitb.dswrs.core.rpc.RpcRequest;
 import software.sitb.dswrs.core.rpc.RpcResponse;
 import software.sitb.dswrs.core.zookeeper.ZooKeeperConfig;
@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author Sean sean.snow@live.com
  */
-public abstract class RpcServer extends NettyServer<RpcRequest, RpcResponse> implements ApplicationContextAware, InitializingBean {
+public abstract class RpcServer extends ObjectServer<RpcRequest, RpcResponse> implements ApplicationContextAware, InitializingBean {
 
     private DswrsProperties properties;
 
@@ -61,11 +61,16 @@ public abstract class RpcServer extends NettyServer<RpcRequest, RpcResponse> imp
         });
     }
 
+    /**
+     * 添加数据处理通道
+     *
+     * @param pipeline 管道
+     */
     @Override
-    public ChannelHandler getMessageHandler() {
+    public void addMessageHandler(ChannelPipeline pipeline) {
         RpcServerHandler handler = new RpcServerHandler();
         handler.setRpcServiceBean(this.rpcBeans);
-        return handler;
+        pipeline.addLast(handler);
     }
 
     @Override
