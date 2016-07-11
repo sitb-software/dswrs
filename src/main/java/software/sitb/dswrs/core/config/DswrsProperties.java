@@ -8,7 +8,7 @@ import software.sitb.dswrs.core.zookeeper.ZooKeeperConfig;
  *
  * @author Sean sean.snow@live.com
  */
-@ConfigurationProperties(prefix = "dswrs", ignoreUnknownFields = true)
+@ConfigurationProperties(prefix = "dswrs")
 public class DswrsProperties {
 
     private String host;
