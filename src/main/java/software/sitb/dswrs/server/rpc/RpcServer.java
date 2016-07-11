@@ -93,4 +93,17 @@ public abstract class RpcServer extends ObjectServer<RpcRequest, RpcResponse> im
      */
     public abstract void serverStartCallback();
 
+    /**
+     * 添加一个RPC服务Bean
+     *
+     * @param clazz 接口Class
+     * @param bean  接口实现示例
+     */
+    public void addRpcBeans(Class<?> clazz, Object bean) {
+        if (null != clazz && null != bean) {
+            String interfaceName = clazz.getName();
+            this.rpcBeans.put(interfaceName, bean);
+        }
+    }
+
 }
