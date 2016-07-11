@@ -22,7 +22,6 @@ public class MessageEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         if (genericClass.isInstance(msg)) {
             byte[] data = SerializationUtil.serialize(msg);
-            out.writeInt(data.length);
             out.writeBytes(data);
         } else {
             ctx.close();
