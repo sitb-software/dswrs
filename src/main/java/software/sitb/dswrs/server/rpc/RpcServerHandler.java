@@ -56,7 +56,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
             String className = request.getClassName();
             Object serviceBean = rpcServiceBean.get(className);
             if (null == serviceBean) {
-                throw new IllegalArgumentException("请求RPC服务不存在.");
+                throw new IllegalArgumentException("请求RPC服务不存在 -> " + className);
             }
 
             Class<?> serviceClass = serviceBean.getClass();
