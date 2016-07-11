@@ -1,6 +1,7 @@
 package software.sitb.dswrs.core.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.EmptyByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import software.sitb.dswrs.core.utils.SerializationUtil;
@@ -26,6 +27,10 @@ public class MessageDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        if (in instanceof EmptyByteBuf) {
+            ctx.close();
+            return;
+        }
         byte[] data = new byte[in.readableBytes()];
         in.readBytes(data);
         Object obj = SerializationUtil.deserialize(data, genericClass);
