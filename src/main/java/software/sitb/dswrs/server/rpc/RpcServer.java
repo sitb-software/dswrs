@@ -1,10 +1,7 @@
 package software.sitb.dswrs.server.rpc;
 
 import io.netty.channel.ChannelPipeline;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import software.sitb.dswrs.core.ServiceRegistry;
 import software.sitb.dswrs.core.config.DswrsProperties;
 import software.sitb.dswrs.core.netty.ObjectServer;
@@ -20,13 +17,20 @@ import java.util.Map;
  *
  * @author Sean sean.snow@live.com
  */
-public abstract class RpcServer extends ObjectServer<RpcRequest, RpcResponse> implements ApplicationContextAware, InitializingBean {
+public class RpcServer extends ObjectServer<RpcRequest, RpcResponse> {
 
     private DswrsProperties properties;
 
     private ServiceRegistry serviceRegistry;
 
     private Map<String, Object> rpcBeans = new HashMap<>(0);
+
+    private ApplicationContext applicationContext;
+
+    public RpcServer(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        this.init();
+    }
 
     @Override
     public int getPort() {
@@ -48,19 +52,6 @@ public abstract class RpcServer extends ObjectServer<RpcRequest, RpcResponse> im
         return RpcResponse.class;
     }
 
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.start(() -> {
-            ZooKeeperConfig config = this.properties.getZooKeeper();
-            if (config.getEnabled()) {
-                String data = this.getHost() + ":" + this.getPort();
-                this.serviceRegistry.register(data);
-            }
-            this.serverStartCallback();
-        });
-    }
-
     /**
      * 添加数据处理通道
      *
@@ -73,8 +64,7 @@ public abstract class RpcServer extends ObjectServer<RpcRequest, RpcResponse> im
         pipeline.addLast(handler);
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    protected void init() {
         this.properties = applicationContext.getBean(DswrsProperties.class);
         this.serviceRegistry = applicationContext.getBean(ServiceRegistry.class);
         Map<String, Object> rpcBeans = applicationContext.getBeansWithAnnotation(RpcService.class);
@@ -89,11 +79,6 @@ public abstract class RpcServer extends ObjectServer<RpcRequest, RpcResponse> im
 
 
     /**
-     * 服务启动回调函数
-     */
-    public abstract void serverStartCallback();
-
-    /**
      * 添加一个RPC服务Bean
      *
      * @param clazz 接口Class
@@ -104,6 +89,16 @@ public abstract class RpcServer extends ObjectServer<RpcRequest, RpcResponse> im
             String interfaceName = clazz.getName();
             this.rpcBeans.put(interfaceName, bean);
         }
+    }
+
+    public void startRpcServer() throws InterruptedException {
+        this.start(() -> {
+            ZooKeeperConfig config = this.properties.getZooKeeper();
+            if (config.getEnabled()) {
+                String data = this.getHost() + ":" + this.getPort();
+                this.serviceRegistry.register(data);
+            }
+        });
     }
 
 }

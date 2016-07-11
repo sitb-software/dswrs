@@ -19,6 +19,7 @@ public class ZooKeeperHelper {
         return ZooKeeperHelperFactory.zooKeeperHelper;
     }
 
+
     /**
      * 连接到ZK
      *
@@ -39,31 +40,34 @@ public class ZooKeeperHelper {
     }
 
     /**
-     * 创建一个根节点
+     * 创建一个临时节点
      *
-     * @param zk       ZooKeeper
-     * @param rootPath 根路径
-     * @return 创建后的路径
-     * @throws KeeperException KeeperException
-     * @throws InterruptedException InterruptedException
+     * @param path 路径
+     * @param data 数据
+     * @param zk ZooKeeper
+     * @return the actual path of the created node
+     * @throws KeeperException if the server returns a non-zero error code
+     * @throws InterruptedException if the transaction is interrupted
      */
-    public String createRootNode(ZooKeeper zk, String rootPath) throws KeeperException, InterruptedException {
-        return createNode(zk, rootPath, null, CreateMode.PERSISTENT);
+    public String createNodeWithEphemeral(ZooKeeper zk, String path, String data) throws KeeperException, InterruptedException {
+        return createNode(zk, path, data, CreateMode.EPHEMERAL);
     }
 
+
     /**
-     * 创建一个子节点
+     * 创建一个永久节点
      *
-     * @param zk            ZooKeeper
-     * @param childNodePath 路径
-     * @param nodeData      数据
-     * @return 创建后的路径
-     * @throws KeeperException KeeperException
-     * @throws InterruptedException InterruptedException
+     * @param path 路径
+     * @param data 数据
+     * @param zk ZooKeeper
+     * @return the actual path of the created node
+     * @throws KeeperException if the server returns a non-zero error code
+     * @throws InterruptedException if the transaction is interrupted
      */
-    public String createChildNode(ZooKeeper zk, String childNodePath, String nodeData) throws KeeperException, InterruptedException {
-        return createNode(zk, childNodePath, nodeData, CreateMode.EPHEMERAL);
+    public String createNodeWithPersistent(ZooKeeper zk, String path, String data) throws KeeperException, InterruptedException {
+        return createNode(zk, path, data, CreateMode.PERSISTENT);
     }
+
 
     /**
      * 创建一个节点
@@ -73,7 +77,7 @@ public class ZooKeeperHelper {
      * @param nodeData   节点数据
      * @param createMode 创建模式
      * @return 创建的路径
-     * @throws KeeperException KeeperException
+     * @throws KeeperException      KeeperException
      * @throws InterruptedException InterruptedException
      */
     private String createNode(ZooKeeper zk, String nodePath, String nodeData, CreateMode createMode) throws KeeperException, InterruptedException {

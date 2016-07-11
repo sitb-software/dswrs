@@ -37,13 +37,13 @@ public class ZooKeeperServiceRegistry implements ServiceRegistry {
                 try {
                     Stat stat = zk.exists(getRegistryPath(), true);
                     if (null == stat) {
-                        String root = helper.createRootNode(zk, getRegistryPath());
+                        String root = helper.createNodeWithPersistent(zk, getRegistryPath(), null);
                         LOGGER.debug("create root node {}", root);
                     }
                     String nodePath = getRegistryPath() + getNodePath();
                     stat = zk.exists(nodePath, true);
                     if (null == stat) {
-                        String serverNode = helper.createChildNode(zk, nodePath, data.toString());
+                        String serverNode = helper.createNodeWithEphemeral(zk, nodePath, data.toString());
                         LOGGER.debug("create server node {}", serverNode);
                     }
                 } catch (KeeperException | InterruptedException e) {

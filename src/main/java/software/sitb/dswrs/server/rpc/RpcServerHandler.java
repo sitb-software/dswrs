@@ -3,7 +3,8 @@ package software.sitb.dswrs.server.rpc;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cglib.reflect.FastClass;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * @author Sean sean.snow@live.com
  */
-public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
+public class RpcServerHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RpcServerHandler.class);
 
@@ -24,8 +25,12 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
 
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
-        ctx.write(handler(msg));
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        try {
+            ctx.writeAndFlush(handler((RpcRequest) msg));
+        } finally {
+            ReferenceCountUtil.release(msg);
+        }
     }
 
     @Override
@@ -77,4 +82,6 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     public void setRpcServiceBean(Map<String, Object> rpcServiceBean) {
         this.rpcServiceBean = rpcServiceBean;
     }
+
+
 }

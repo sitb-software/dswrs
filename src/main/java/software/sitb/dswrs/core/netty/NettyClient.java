@@ -44,13 +44,14 @@ public abstract class NettyClient<I, O> implements NettyNetwork {
     }
 
 
-    private class Handler extends SimpleChannelInboundHandler<Object> {
+    private class Handler extends ChannelInboundHandlerAdapter {
 
         @Override
         @SuppressWarnings("unchecked")
-        protected void messageReceived(ChannelHandlerContext ctx, Object response) throws Exception {
+        public void channelRead(ChannelHandlerContext ctx, Object response) throws Exception {
             LOGGER.info("receive data -> [{}]", response);
             NettyClient.this.response = (O) response;
+
         }
 
         @Override
