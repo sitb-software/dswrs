@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.EmptyByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.sitb.dswrs.core.utils.SerializationUtil;
 
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
  */
 public class MessageDecoder extends ByteToMessageDecoder {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageDecoder.class);
+
     private Class<?> genericClass;
 
     public MessageDecoder(Class<?> genericClass) {
@@ -31,11 +35,31 @@ public class MessageDecoder extends ByteToMessageDecoder {
             ctx.close();
             return;
         }
-        byte[] data = new byte[in.readableBytes()];
-        in.readBytes(data);
-        Object obj = SerializationUtil.deserialize(data, genericClass);
-        out.add(obj);
 
+        if (in.readableBytes() < 4) {
+            return;
+        }
+
+        in.markReaderIndex();
+
+        int dataLength = in.readInt();
+
+        if (dataLength < 0) {
+            ctx.close();
+            return;
+        }
+
+        if (in.readableBytes() < dataLength) {
+            in.resetReaderIndex();
+            return;
+        }
+        LOGGER.debug("read data length = [{}]", dataLength);
+        byte[] data = new byte[dataLength];
+        in.readBytes(data);
+
+        Object obj = SerializationUtil.deserialize(data, genericClass);
+        LOGGER.debug("read data = [{}]", obj);
+        out.add(obj);
     }
 
 }
