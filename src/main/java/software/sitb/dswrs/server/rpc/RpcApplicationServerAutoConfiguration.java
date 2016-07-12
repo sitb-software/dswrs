@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import software.sitb.dswrs.core.ServiceRegistry;
 import software.sitb.dswrs.core.config.DswrsProperties;
@@ -22,6 +23,8 @@ public class RpcApplicationServerAutoConfiguration {
     @Autowired
     private DswrsProperties properties;
 
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Bean
     @ConditionalOnMissingBean
@@ -38,6 +41,12 @@ public class RpcApplicationServerAutoConfiguration {
         //default
         return data -> {
         };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RpcServer rpcServer() {
+        return new RpcServer(applicationContext);
     }
 
 }
