@@ -43,7 +43,7 @@ public class ZooKeeperServiceDiscovery implements ServiceDiscovery {
     }
 
     @Override
-    public String discover() {
+    public String discover() throws Throwable {
         String data = null;
         int size = dataList.size();
         if (size > 0) {
@@ -56,7 +56,7 @@ public class ZooKeeperServiceDiscovery implements ServiceDiscovery {
             }
         }
         if (null == data) {
-            throw new IllegalArgumentException("没有可用的服务器(Did not find the available server) on ZooKeeper node > " + getRegistryPath());
+            throw new IOException("没有可用的服务器(Did not find the available server) on ZooKeeper node > " + getRegistryPath());
         }
         return data;
     }
