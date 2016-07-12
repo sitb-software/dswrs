@@ -1,5 +1,7 @@
 package software.sitb.dswrs.core.rpc;
 
+import java.util.Arrays;
+
 /**
  * RPC 请求数据
  *
@@ -57,5 +59,17 @@ public class RpcRequest implements java.io.Serializable {
 
     public void setParameters(Object[] parameters) {
         this.parameters = parameters;
+    }
+
+
+    @Override
+    public String toString() {
+        return "RpcRequest{" +
+                "requestId='" + requestId + '\'' +
+                ", className='" + className + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", parameterTypes=" + Arrays.toString(parameterTypes) +
+                ", parameters=" + Arrays.toString(parameters) +
+                '}';
     }
 }
