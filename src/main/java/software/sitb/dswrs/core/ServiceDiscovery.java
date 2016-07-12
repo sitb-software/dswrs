@@ -6,5 +6,5 @@ package software.sitb.dswrs.core;
  * @author Sean sean.snow@live.com
  */
 public interface ServiceDiscovery {
-    String discover();
+    String discover() throws Throwable;
 }
