@@ -12,6 +12,7 @@ import org.springframework.cglib.reflect.FastMethod;
 import software.sitb.dswrs.core.rpc.RpcRequest;
 import software.sitb.dswrs.core.rpc.RpcResponse;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -74,7 +75,11 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
             response.setResult(serviceFastMethod.invoke(serviceBean, parameters));
         } catch (Throwable t) {
             LOGGER.error("RPC Handler Error -> {}", t.getMessage(), t);
-            response.setError(t);
+            if (t instanceof InvocationTargetException) {
+                response.setError(((InvocationTargetException) t).getTargetException());
+            } else {
+                response.setError(t);
+            }
         }
         return response;
     }
