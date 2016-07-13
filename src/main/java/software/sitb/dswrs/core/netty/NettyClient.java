@@ -14,13 +14,16 @@ import org.slf4j.LoggerFactory;
  * date 2015-4-11
  * time 下午1:45:21
  */
-public abstract class NettyClient<I, O> implements NettyNetwork {
+public abstract class NettyClient<I, O> extends ChannelInboundHandlerAdapter implements NettyNetwork {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
+
+    private I request;
 
     private O response;
 
     public O send(I request) throws Exception {
+        this.request = request;
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -28,46 +31,37 @@ public abstract class NettyClient<I, O> implements NettyNetwork {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     addHandler(channel.pipeline());
-                    channel.pipeline().addLast(new Handler());
+                    channel.pipeline().addLast(NettyClient.this);
                 }
             }).option(ChannelOption.SO_KEEPALIVE, true);
 
-            ChannelFuture future = bootstrap.connect(getHost(), getPort()).sync();
-            LOGGER.info("send data -> [{}]", request);
-            future.channel().writeAndFlush(request).sync();
-            LOGGER.debug("Waiting response....");
-            future.channel().closeFuture().sync();
+            bootstrap.connect(getHost(), getPort()).channel().closeFuture().await();
             return response;
         } finally {
             group.shutdownGracefully();
         }
     }
 
-
-    private class Handler extends ChannelInboundHandlerAdapter {
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public void channelRead(ChannelHandlerContext ctx, Object response) throws Exception {
-            LOGGER.info("receive data -> [{}]", response);
-            NettyClient.this.response = (O) response;
-
-        }
-
-        @Override
-        public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-            LOGGER.info("Read Complete, close channel");
-            ctx.flush().close();
-        }
-
-        @Override
-        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            LOGGER.error(cause.getMessage(), cause);
-            ctx.close();
-            throw new Exception(cause);
-        }
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        LOGGER.info("send data => [{}]", request);
+        ctx.writeAndFlush(request);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        LOGGER.info("receive data -> [{}]", msg);
+        response = (O) msg;
+        LOGGER.info("read complete.close channel.");
+        ctx.close();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        LOGGER.error("NettyClient Exception", cause);
+        super.exceptionCaught(ctx, cause);
+    }
 }
 
 
