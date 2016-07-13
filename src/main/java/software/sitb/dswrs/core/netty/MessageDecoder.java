@@ -28,7 +28,6 @@ public class MessageDecoder extends ByteToMessageDecoder {
         this.genericClass = genericClass;
     }
 
-
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         if (in instanceof EmptyByteBuf) {
@@ -36,20 +35,24 @@ public class MessageDecoder extends ByteToMessageDecoder {
             return;
         }
 
-        if (in.readableBytes() < 4) {
+        int readable = in.readableBytes();
+        LOGGER.debug("readable = [{}]", readable);
+        if (readable < 4) {
             return;
         }
 
         in.markReaderIndex();
 
         int dataLength = in.readInt();
-
+        LOGGER.debug("data length = [{}]", dataLength);
         if (dataLength < 0) {
+            LOGGER.debug("数据长度小于0,关闭通道");
             ctx.close();
             return;
         }
 
         if (in.readableBytes() < dataLength) {
+            LOGGER.trace("可读数据长度小于数据长度,回滚指针");
             in.resetReaderIndex();
             return;
         }
