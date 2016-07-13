@@ -70,9 +70,19 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
 
             Class<?>[] parameterTypes = request.getParameterTypes();
             Object[] parameters = request.getParameters();
+
+            Object[] params = new Object[parameters.length];
+            for (int i = 0; i < parameters.length; i++) {
+                if (parameters[i] instanceof String && parameters[i].equals("DSWRS_NULL_DATA")) {
+                    params[i] = null;
+                } else {
+                    params[i] = parameters[i];
+                }
+            }
+
             FastClass serviceFastClass = FastClass.create(serviceClass);
             FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
-            response.setResult(serviceFastMethod.invoke(serviceBean, parameters));
+            response.setResult(serviceFastMethod.invoke(serviceBean, params));
         } catch (Throwable t) {
             LOGGER.error("RPC Handler Error -> {}", t.getMessage(), t);
             if (t instanceof InvocationTargetException) {

@@ -42,7 +42,17 @@ public class RpcBeanProxyHelper implements MethodInterceptor {
         request.setClassName(method.getDeclaringClass().getName());
         request.setMethodName(method.getName());
         request.setParameterTypes(method.getParameterTypes());
-        request.setParameters(objects);
+
+        Object[] params = new Object[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] == null) {
+                params[i] = "DSWRS_NULL_DATA";
+            } else {
+                params[i] = objects[i];
+            }
+        }
+
+        request.setParameters(params);
 
         String[] serverAddress = getServiceDiscovery().discover().split(":");
 
