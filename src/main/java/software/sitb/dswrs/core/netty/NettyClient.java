@@ -22,6 +22,8 @@ public abstract class NettyClient<I, O> extends ChannelInboundHandlerAdapter imp
 
     private O response;
 
+    private Exception cause;
+
     public O send(I request) throws Exception {
         this.request = request;
         EventLoopGroup group = new NioEventLoopGroup();
@@ -36,6 +38,11 @@ public abstract class NettyClient<I, O> extends ChannelInboundHandlerAdapter imp
             }).option(ChannelOption.SO_KEEPALIVE, true);
 
             bootstrap.connect(getHost(), getPort()).channel().closeFuture().await();
+
+            if (null != cause) {
+                throw cause;
+            }
+
             return response;
         } finally {
             group.shutdownGracefully();
@@ -59,8 +66,9 @@ public abstract class NettyClient<I, O> extends ChannelInboundHandlerAdapter imp
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.error("NettyClient Exception", cause);
-        super.exceptionCaught(ctx, cause);
+        LOGGER.error("NettyClient Exception, close channel.", cause);
+        this.cause = new Exception(cause);
+        ctx.close();
     }
 }
 
