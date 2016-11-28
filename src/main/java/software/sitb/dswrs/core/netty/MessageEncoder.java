@@ -25,11 +25,17 @@ public class MessageEncoder extends MessageToByteEncoder<Object> {
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         if (genericClass.isInstance(msg)) {
-            LOGGER.debug("write data = [{}]", msg);
-            byte[] data = SerializationUtil.serialize(msg);
-            LOGGER.debug("write data length = [{}]", data.length);
-            out.writeInt(data.length);
-            out.writeBytes(data);
+            try {
+                LOGGER.debug("write data = [{}]", msg);
+                byte[] data = SerializationUtil.serialize(msg);
+                LOGGER.debug("write data length = [{}]", data.length);
+                out.writeInt(data.length);
+                out.writeBytes(data);
+            } catch (Exception e) {
+                LOGGER.error("数据序列化失败", e);
+                ctx.close();
+                throw e;
+            }
         } else {
             ctx.close();
         }
