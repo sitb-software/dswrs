@@ -1,4 +1,4 @@
-ext.repoUrl = "http://repo.sitb.software/content/groups/public"
+ext.repoUrl = "http://repo.sitb.software/repository/maven-public/"
 ext.spring_boot = "1.4.0.RELEASE"
 ext.spring_security = "4.1.1.RELEASE"
 ext.spring_data_commons = "1.12.2.RELEASE"
@@ -84,7 +84,7 @@ ext.lib = [
         activemq_broker                    : "org.apache.activemq:activemq-broker:${activemq}",
         activemq_pool                      : "org.apache.activemq:activemq-pool:${activemq}",
         httpclient                         : "org.apache.httpcomponents:httpclient:4.4.1",
-        netty_all                          : "io.netty:netty-all:4.1.4.Final",
+        netty_all                          : "io.netty:netty-all:4.1.6.Final",
         zookeeper                          : "org.apache.zookeeper:zookeeper:3.4.8",
         protostuff                         : [
                 "com.dyuproject.protostuff:protostuff-core:1.0.10",
