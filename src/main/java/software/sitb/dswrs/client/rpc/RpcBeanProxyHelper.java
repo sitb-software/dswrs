@@ -83,6 +83,10 @@ public class RpcBeanProxyHelper implements MethodInterceptor {
 
         RpcResponse response = client.send(request);
 
+        if (null == response) {
+            throw new RuntimeException("RPC 执行中发生未知异常");
+        }
+
         if (response.success()) {
             return response.getResult();
         } else if (response.getError() != null) {
