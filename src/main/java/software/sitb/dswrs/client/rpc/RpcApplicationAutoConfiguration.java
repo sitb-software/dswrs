@@ -31,6 +31,13 @@ public class RpcApplicationAutoConfiguration {
             return serviceDiscovery;
         }
 
+        if (null == properties.getHost()) {
+            throw new IllegalArgumentException("ZooKeeper 没有启用,也没有配置默认的主机 dswrs.host = null");
+        }
+        if (null == properties.getPort()) {
+            throw new IllegalArgumentException("ZooKeeper 没有启用,也没有配置默认的端口 dswrs.port = null");
+        }
+
         return () -> properties.getHost() + ":" + properties.getPort();
 
     }
