@@ -58,30 +58,31 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
     private RpcResponse handler(RpcRequest request) {
         RpcResponse response = new RpcResponse();
         response.setRequestId(request.getRequestId());
+        String className = request.getClassName();
+        Object serviceBean = rpcServiceBean.get(className);
+        if (null == serviceBean) {
+            throw new IllegalArgumentException("请求RPC服务不存在 -> " + className);
+        }
+
+        Class<?> serviceClass = serviceBean.getClass();
+        String methodName = request.getMethodName();
+
+        Class<?>[] parameterTypes = request.getParameterTypes();
+        Object[] parameters = request.getParameters();
+
+        Object[] params = new Object[parameters.length];
+        // 序列化时null会被删除,如果是null值使用自定义值取代
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i] instanceof String && parameters[i].equals("DSWRS_NULL_DATA")) {
+                params[i] = null;
+            } else {
+                params[i] = parameters[i];
+            }
+        }
+
+        FastClass serviceFastClass = FastClass.create(serviceClass);
+        FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
         try {
-            String className = request.getClassName();
-            Object serviceBean = rpcServiceBean.get(className);
-            if (null == serviceBean) {
-                throw new IllegalArgumentException("请求RPC服务不存在 -> " + className);
-            }
-
-            Class<?> serviceClass = serviceBean.getClass();
-            String methodName = request.getMethodName();
-
-            Class<?>[] parameterTypes = request.getParameterTypes();
-            Object[] parameters = request.getParameters();
-
-            Object[] params = new Object[parameters.length];
-            for (int i = 0; i < parameters.length; i++) {
-                if (parameters[i] instanceof String && parameters[i].equals("DSWRS_NULL_DATA")) {
-                    params[i] = null;
-                } else {
-                    params[i] = parameters[i];
-                }
-            }
-
-            FastClass serviceFastClass = FastClass.create(serviceClass);
-            FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
             response.setResult(serviceFastMethod.invoke(serviceBean, params));
         } catch (InvocationTargetException t) {
             LOGGER.error("RPC Handler Error -> {}", t.getTargetException().getMessage());
