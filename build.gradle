@@ -1,5 +1,5 @@
 group 'software.sitb'
-version '1.0.13.RELEASE'
+version '1.0.14.RELEASE'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -14,12 +14,12 @@ repositories {
 }
 
 dependencies {
-    optional lib.logging
-    optional lib.spring_boot
-    optional lib.protostuff
-    optional lib.objenesis
-    optional lib.netty_all
-    optional(lib.zookeeper) {
+    provided lib.logging
+    provided lib.spring_boot
+    provided lib.protostuff
+    provided lib.objenesis
+    provided lib.netty_all
+    provided(lib.zookeeper) {
         transitive = false
     }
     provided lib.spring_boot_configuration_processor
