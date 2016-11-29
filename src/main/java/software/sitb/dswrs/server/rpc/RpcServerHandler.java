@@ -83,13 +83,9 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
             FastClass serviceFastClass = FastClass.create(serviceClass);
             FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
             response.setResult(serviceFastMethod.invoke(serviceBean, params));
-        } catch (Throwable t) {
-            LOGGER.error("RPC Handler Error -> {}", t.getMessage(), t);
-            if (t instanceof InvocationTargetException) {
-                response.setError(((InvocationTargetException) t).getTargetException());
-            } else {
-                response.setError(t);
-            }
+        } catch (InvocationTargetException t) {
+            LOGGER.error("RPC Handler Error -> {}", t.getTargetException().getMessage());
+            response.setError(t.getTargetException());
         }
         return response;
     }
