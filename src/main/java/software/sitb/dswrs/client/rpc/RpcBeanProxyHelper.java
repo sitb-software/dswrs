@@ -1,5 +1,7 @@
 package software.sitb.dswrs.client.rpc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
@@ -18,16 +20,17 @@ import java.util.UUID;
  */
 public class RpcBeanProxyHelper implements MethodInterceptor {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcBeanProxyHelper.class);
+
     private Enhancer enhancer = new Enhancer();
 
     private ServiceDiscovery serviceDiscovery;
-
 
     /**
      * 创建一个代理bean
      *
      * @param clazz 目标类
-     * @return 代理类
+     * @return RPC代理类
      */
     public Object createBean(Class<?> clazz) {
         enhancer.setSuperclass(clazz);
@@ -90,6 +93,7 @@ public class RpcBeanProxyHelper implements MethodInterceptor {
         if (response.success()) {
             return response.getResult();
         } else if (response.getError() != null) {
+            LOGGER.error("RCP服务器执行请求失败", response.getError());
             throw response.getError();
         } else {
             throw new RuntimeException("RPC未知错误");
